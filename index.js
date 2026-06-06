@@ -131,6 +131,11 @@ async function loadBreed(breedId) {
     onDownloadProgress: updateProgress
   });
 
+  if (!data.length) {
+    infoDump.innerHTML = "<p>No images available for this breed.</p>";
+    return;
+  }
+
   data.forEach((item) => {
     const breedItem = Carousel.createCarouselItem(
       item.url,
@@ -143,14 +148,14 @@ async function loadBreed(breedId) {
 
   Carousel.start();
 
-  const breedInfo = data[0]?.breeds[0];
+  const breedInfo = data[0]?.breeds?.[0];
 
   if (breedInfo) {
     infoDump.innerHTML = `
-      <h2>${breedInfo.name}</h2>
-      <p>${breedInfo.description}</p>
-      <p>${breedInfo.temperament}</p>
-      <p>${breedInfo.origin}</p>
+      <h2>${breedInfo.name || "Unknown Breed"}</h2>
+      ${breedInfo.description ? `<p><strong>Description:</strong> ${breedInfo.description}</p>` : ""}
+      ${breedInfo.temperament ? `<p><strong>Temperament:</strong> ${breedInfo.temperament}</p>` : ""}
+      ${breedInfo.origin ? `<p><strong>Origin:</strong> ${breedInfo.origin}</p>` : ""}
     `;
   }
 }
