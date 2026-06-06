@@ -10,12 +10,14 @@ axios.defaults.headers.common["x-api-key"] = API_KEY;
 axios.interceptors.request.use((config) => {
   config.metadata = { startTime: Date.now() };
   progressBar.style.width = "0%";
+  document.body.style.cursor = "progress";
   console.log(`Request started: ${config.method?.toUpperCase()} ${config.url}`);
   return config;
 });
 
 axios.interceptors.response.use((response) => {
   const elapsed = Date.now() - response.config.metadata.startTime;
+  document.body.style.cursor = "";
   console.log(`Request completed in ${elapsed}ms`);
   return response;
 });
