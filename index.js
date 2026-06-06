@@ -232,7 +232,13 @@ async function loadBreed(breedId) {
  * - You can call this function by clicking on the heart at the top right of any image.
  */
 export async function favourite(imgId) {
-  // your code here
+  const { data: favourites } = await axios.get("/favourites");
+  const existing = favourites.find((fav) => fav.image_id === imgId);
+  if (existing) {
+    await axios.delete(`/favourites/${existing.id}`);
+  } else {
+    await axios.post("/favourites", { image_id: imgId });
+  }
 }
 
 /**
