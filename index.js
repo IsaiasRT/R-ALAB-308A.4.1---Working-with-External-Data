@@ -4,7 +4,8 @@ import { API_KEY } from "./keys.js";
 
 
 
-//import axios from "axios";
+axios.defaults.baseURL = "https://api.thecatapi.com/v1";
+axios.defaults.headers.common["x-api-key"] = API_KEY;
 
 // The breed selection input element.
 
@@ -44,21 +45,7 @@ const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 
 async function initialLoad() {
 
-  const response = await fetch("https://api.thecatapi.com/v1/breeds",
-
-    {
-
-      headers: {
-
-        "x-api-key": API_KEY,
-
-      },
-
-    }
-
-  );
-
-  const breeds = await response.json();
+  const { data: breeds } = await axios.get("/breeds");
 
   breeds.forEach((breed) => {
 
@@ -118,16 +105,7 @@ async function loadBreed(breedId) {
   Carousel.clear();
   infoDump.innerHTML = "";
 
-  const response = await fetch(
-    `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}&limit=10`,
-    {
-      headers: {
-        "x-api-key": API_KEY
-      }
-    }
-  );
-
-  const data = await response.json();
+  const { data } = await axios.get(`/images/search?breed_ids=${breedId}&limit=10`);
 
   data.forEach((item) => {
     const breedItem = Carousel.createCarouselItem(
