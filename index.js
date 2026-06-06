@@ -7,6 +7,18 @@ import { API_KEY } from "./keys.js";
 axios.defaults.baseURL = "https://api.thecatapi.com/v1";
 axios.defaults.headers.common["x-api-key"] = API_KEY;
 
+axios.interceptors.request.use((config) => {
+  config.metadata = { startTime: Date.now() };
+  console.log(`Request started: ${config.method?.toUpperCase()} ${config.url}`);
+  return config;
+});
+
+axios.interceptors.response.use((response) => {
+  const elapsed = Date.now() - response.config.metadata.startTime;
+  console.log(`Request completed in ${elapsed}ms`);
+  return response;
+});
+
 // The breed selection input element.
 
 const breedSelect = document.getElementById("breedSelect");
