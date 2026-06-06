@@ -155,6 +155,25 @@ async function loadBreed(breedId) {
   }
 }
 
+async function getFavourites() {
+  Carousel.clear();
+  infoDump.innerHTML = "";
+
+  const { data: favourites } = await axios.get("/favourites");
+
+  favourites.forEach((fav) => {
+    const item = Carousel.createCarouselItem(
+      fav.image.url,
+      fav.image_id,
+      fav.image_id
+    );
+    Carousel.appendCarousel(item);
+  });
+
+  Carousel.start();
+}
+
+getFavouritesBtn.addEventListener("click", getFavourites);
 
 /**
  * 1. Create an async function "initialLoad" that does the following:
