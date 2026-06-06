@@ -9,6 +9,7 @@ axios.defaults.headers.common["x-api-key"] = API_KEY;
 
 axios.interceptors.request.use((config) => {
   config.metadata = { startTime: Date.now() };
+  progressBar.style.width = "0%";
   console.log(`Request started: ${config.method?.toUpperCase()} ${config.url}`);
   return config;
 });
@@ -113,11 +114,20 @@ breedSelect.addEventListener("change", () => {
   loadBreed(breedSelect.value);
 });
 
+function updateProgress(e) {
+  if (e.lengthComputable) {
+    const percent = (e.loaded / e.total) * 100;
+    progressBar.style.width = `${percent}%`;
+  }
+}
+
 async function loadBreed(breedId) {
   Carousel.clear();
   infoDump.innerHTML = "";
 
-  const { data } = await axios.get(`/images/search?breed_ids=${breedId}&limit=10`);
+  const { data } = await axios.get(`/images/search?breed_ids=${breedId}&limit=10`, {
+    onDownloadProgress: updateProgress
+  });
 
   data.forEach((item) => {
     const breedItem = Carousel.createCarouselItem(
